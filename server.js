@@ -4,45 +4,47 @@ const { Server } = require('socket.io');
 
 const app = express();
 const server = http.createServer(app);
+
+// Meningkatkan batas ukuran kirim data hingga 10MB (untuk foto, file & audio)
 const io = new Server(server, {
+  maxHttpBufferSize: 1e7,
   cors: { origin: "*", methods: ["GET", "POST"] }
 });
 
 app.use(express.static('public'));
 
-// Menyimpan riwayat pesan di server
 const chatHistory = [];
 
 io.on('connection', (socket) => {
   const username = 'User-' + Math.floor(Math.random() * 1000);
 
-  // 1. Kirim semua riwayat pesan yang ada khusus ke pengguna yang baru terhubung/refresh
+  // Kirim riwayat saat baru terhubung
   socket.emit('load history', chatHistory);
 
-  // Notifikasi sistem
   io.emit('chat message', {
     user: 'System',
     text: `${username} bergabung`
   });
 
-  // 2. Menerima pesan baru dari pengguna
   socket.on('chat message', (data) => {
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
     const messageData = {
       user: username,
-      text: data.text,
-      senderId: data.senderId, // ID unik pengguna dari browser
+      text: data.text || '',
+      image: data.image || null,
+      audio: data.audio || null,
+      file: data.file || null,
+      fileName: data.fileName || null,
+      senderId: data.senderId,
       time: time
     };
 
-    // Simpan ke riwayat (maksimal 50 pesan terakhir)
     chatHistory.push(messageData);
-    if (chatHistory.length > 100) {
-      chatHistory.shift(); // Hapus pesan paling lama jika sudah lebih dari 50
+    if (chatHistory.length > 50) {
+      chatHistory.shift();
     }
 
-    // Kirim pesan ke semua orang
     io.emit('chat message', messageData);
   });
 
