@@ -60,9 +60,9 @@
       top: 45%;
       left: 50%;
       transform: translate(-50%, -50%) rotate(-15deg);
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 800;
-      color: rgba(0, 0, 0, 0.05);
+      color: rgba(0, 0, 0, 0.04);
       text-transform: uppercase;
       letter-spacing: 3px;
       pointer-events: none;
@@ -86,7 +86,7 @@
     .header-left { display: flex; align-items: center; gap: 10px; }
     .avatar { width: 38px; height: 38px; background: #128c7e; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; color: #fff; }
     .header-info { display: flex; flex-direction: column; }
-    .header-title { font-size: 15px; font-weight: 600; transition: filter 0.3s; }
+    .header-title { font-size: 15px; font-weight: 600; }
     .header-status { font-size: 11px; opacity: 0.85; }
 
     /* Tombol Header (Call & Lock) */
@@ -139,7 +139,7 @@
     
     .message { 
       max-width: 82%; 
-      padding: 6px 10px; 
+      padding: 7px 10px; 
       border-radius: 8px; 
       position: relative; 
       box-shadow: 0 1px 2px rgba(0,0,0,0.12); 
@@ -152,22 +152,21 @@
     .message.incoming { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
     .message.system { align-self: center; background-color: #ffffff99; color: #54656f; font-size: 11px; padding: 4px 12px; border-radius: 6px; box-shadow: none; text-align: center; cursor: default; }
 
-    /* UNTUK TAMPILAN NAMA DI CHAT UTAMA */
+    /* 1. NAMA DITAMPILKAN DI ATAS PESAN */
     .message-username { 
       font-weight: 700; 
-      font-size: 11px; 
+      font-size: 12px; 
       margin-bottom: 3px; 
       display: block; 
       color: #128c7e;
-      transition: filter 0.3s; 
     }
     .message.outgoing .message-username { color: #005c4b; }
 
-    /* KOTAK KUTIPAN BALAS PESAN (REPLY QUOTE) */
+    /* 2. KOTAK KUTIPAN BALAS PESAN (REPLY QUOTE BOX) */
     .reply-quote-box {
       background: rgba(0, 0, 0, 0.06);
       border-left: 4px solid #128c7e;
-      padding: 4px 8px;
+      padding: 5px 8px;
       border-radius: 4px;
       margin-top: 2px;
       margin-bottom: 5px;
@@ -175,14 +174,18 @@
       display: flex;
       flex-direction: column;
     }
+    .message.outgoing .reply-quote-box {
+      background: rgba(0, 0, 0, 0.05);
+      border-left-color: #075e54;
+    }
     .reply-quote-user { font-weight: 700; color: #075e54; margin-bottom: 2px; }
     .reply-quote-text { color: #3b4a54; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 
-    .message-text { font-size: 14px; color: #111b21; line-height: 1.4; margin-top: 1px; transition: filter 0.3s; }
+    .message-text { font-size: 14px; color: #111b21; line-height: 1.4; margin-top: 1px; }
 
-    .message img { max-width: 100%; border-radius: 6px; margin-top: 4px; cursor: pointer; transition: filter 0.3s; }
-    .message audio { max-width: 100%; height: 36px; margin-top: 4px; transition: filter 0.3s; }
-    .file-link { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 6px 10px; border-radius: 6px; text-decoration: none; color: #075e54; font-weight: 500; font-size: 13px; margin-top: 4px; transition: filter 0.3s; }
+    .message img { max-width: 100%; border-radius: 6px; margin-top: 4px; cursor: pointer; }
+    .message audio { max-width: 100%; height: 36px; margin-top: 4px; }
+    .file-link { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 6px 10px; border-radius: 6px; text-decoration: none; color: #075e54; font-weight: 500; font-size: 13px; margin-top: 4px; }
     .time { font-size: 10px; color: #667781; align-self: flex-end; margin-top: 4px; }
 
     /* EFEK KUNCI SENSOR (BLUR) */
@@ -215,7 +218,7 @@
     .reply-preview-text { color: #4a5568; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-cancel-reply { background: none; border: none; font-size: 16px; cursor: pointer; color: #718096; padding: 2px 6px; }
 
-    /* FOOTER TOOLBAR INPUT (PERBAIKAN AGAR TOMBOL KIRIM PRESISI & TIDAK HILANG) */
+    /* FOOTER TOOLBAR INPUT */
     .chat-form { 
       display: flex; 
       padding: 8px 10px; 
@@ -249,7 +252,6 @@
       100% { transform: scale(1); }
     }
 
-    /* FIX PENTING: min-width: 0 dan width: 0 agar input tidak MENDORONG tombol kirim keluar layar HP */
     .chat-form input[type="text"] { 
       flex: 1; 
       min-width: 0;
@@ -262,7 +264,6 @@
       background: #fff; 
     }
 
-    /* TOMBOL KIRIM TERKUNCI UKURANNYA DAN TAMPIL PAS DI KANAN */
     .btn-send { 
       padding: 0; 
       border: none; 
@@ -284,12 +285,12 @@
     .chat-footer-credit { text-align: center; padding: 5px 10px; background: #e9edef; font-size: 11px; color: #54656f; border-top: 1px solid #d1d7db; z-index: 10; flex-shrink: 0; }
     .chat-footer-credit strong { color: #075e54; }
 
-    /* MODAL UMUM (INPUT NAMA & KUNCI PASSWORD) */
+    /* MODAL INPUT NAMA & PASSWORD */
     .app-modal {
       display: none;
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.7);
       z-index: 300;
       justify-content: center;
       align-items: center;
@@ -298,7 +299,7 @@
     .app-modal.active { display: flex; }
     .modal-card {
       background: white;
-      padding: 20px;
+      padding: 22px;
       border-radius: 12px;
       width: 100%;
       max-width: 320px;
@@ -361,7 +362,7 @@
           <div class="header-status" id="status">Menghubungkan...</div>
         </div>
       </div>
-      <!-- Tombol Panggilan & Kunci -->
+      <!-- Tombol Header (Call & Lock) -->
       <div class="header-call-btns">
         <button type="button" class="btn-header-call" id="btnLock" title="1-Klik Kunci Chat">🔒</button>
         <button type="button" class="btn-header-call" id="btnVoiceCall" title="Telepon Suara">📞</button>
@@ -381,7 +382,7 @@
     <!-- Area Chat -->
     <div class="chat-messages" id="messages"></div>
 
-    <!-- Area Pratinjau Balas Pesan -->
+    <!-- Area Pratinjau Balas Pesan (Reply Preview) -->
     <div class="reply-preview-bar" id="replyPreview">
       <div class="reply-preview-info">
         <span class="reply-preview-user" id="replyPreviewUser">Balas Pesan</span>
@@ -409,14 +410,14 @@
       Developed with ❤️ by <strong>Nama Anda</strong>
     </div>
 
-    <!-- MODAL INPUT NAMA PERTAMA KALI -->
+    <!-- MODAL POPUP INPUT NAMA WAJIB PERTAMA KALI -->
     <div class="app-modal" id="nameModal">
       <div class="modal-card">
         <h3>Selamat Datang! 👋</h3>
-        <p>Silakan masukkan nama Anda untuk mulai mengobrol:</p>
-        <input type="text" id="usernameInput" placeholder="Contoh: Budi Utama" maxlength="20" />
+        <p>Silakan masukkan nama Anda sebelum mulai mengobrol:</p>
+        <input type="text" id="usernameInput" placeholder="Contoh: Budi Utama" maxlength="20" autofocus />
         <div class="modal-btns">
-          <button type="button" class="btn-modal btn-modal-primary" id="btnSaveName">Simpan Nama</button>
+          <button type="button" class="btn-modal btn-modal-primary" id="btnSaveName">Simpan & Masuk</button>
         </div>
       </div>
     </div>
@@ -474,7 +475,7 @@
     const status = document.getElementById('status');
     const chatApp = document.getElementById('chatApp');
 
-    // 1. PENGELOLAAN ID & NAMA PENGGUNA
+    // 1. PENGELOLAAN USER ID & NAMA
     let myUserId = localStorage.getItem('chat_user_id');
     if (!myUserId) {
       myUserId = 'user_' + Math.random().toString(36).substr(2, 9);
@@ -486,6 +487,7 @@
     const usernameInput = document.getElementById('usernameInput');
     const btnSaveName = document.getElementById('btnSaveName');
 
+    // Jika nama belum ada, modal nama WAJIB tampil & tidak bisa ditutup
     if (!myUserName) {
       nameModal.classList.add('active');
     }
@@ -502,7 +504,7 @@
         localStorage.setItem('chat_username', val);
         nameModal.classList.remove('active');
       } else {
-        alert('Nama tidak boleh kosong!');
+        alert('Nama pengguna wajib diisi!');
       }
     }
 
@@ -512,14 +514,16 @@
 
     socket.on('load history', (history) => {
       messages.innerHTML = '';
-      history.forEach(data => renderMessage(data));
+      if (Array.isArray(history)) {
+        history.forEach(data => renderMessage(data));
+      }
     });
 
     socket.on('chat message', (data) => {
       renderMessage(data);
     });
 
-    // 3. FITUR BALAS PESAN (REPLY)
+    // 3. FITUR BALAS PESAN (REPLY QUOTE)
     let currentReply = null;
     const replyPreview = document.getElementById('replyPreview');
     const replyPreviewUser = document.getElementById('replyPreviewUser');
@@ -539,16 +543,22 @@
       replyPreview.classList.remove('active');
     });
 
-    // FORM SUBMIT PESAN
+    // FORM SUBMIT UTAMA PESAN TEKS
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      if (!myUserName) {
+        nameModal.classList.add('active');
+        return;
+      }
+
       const text = input.value.trim();
       if (text) {
         const payload = {
           text: text,
           senderId: myUserId,
-          senderName: myUserName || 'Pengguna',
-          replyTo: currentReply
+          senderName: myUserName,
+          user: myUserName,
+          replyTo: currentReply ? { ...currentReply } : null
         };
         socket.emit('chat message', payload);
         input.value = '';
@@ -557,7 +567,7 @@
       }
     });
 
-    // 4. FITUR KUNCI & SENSOR PASSWORD
+    // 4. FITUR KUNCI CHAT & PASSWORD
     const btnLock = document.getElementById('btnLock');
     const btnUnlock = document.getElementById('btnUnlock');
     const lockBanner = document.getElementById('lockBanner');
@@ -585,10 +595,10 @@
       const savedPwd = localStorage.getItem('chat_password');
       if (!savedPwd) {
         pwdModalTitle.textContent = "Buat Password Kunci 🔒";
-        pwdModalDesc.textContent = "Masukkan password baru untuk fitur kunci:";
+        pwdModalDesc.textContent = "Masukkan password baru untuk menyensor chat:";
       } else {
         pwdModalTitle.textContent = "Buka Kunci Chat 🔓";
-        pwdModalDesc.textContent = "Masukkan password Anda untuk menyensor ulang chat:";
+        pwdModalDesc.textContent = "Masukkan password Anda untuk membuka sensor:";
       }
       passwordInput.value = '';
       passwordModal.classList.add('active');
@@ -615,7 +625,7 @@
 
       if (!savedPwd) {
         localStorage.setItem('chat_password', enteredPwd);
-        alert('Password kunci berhasil dibuat!');
+        alert('Password berhasil disimpan!');
         unlockApp();
         passwordModal.classList.remove('active');
       } else {
@@ -628,7 +638,7 @@
       }
     }
 
-    // 5. MEDIA & ATTACHMENT
+    // 5. KIRIM MEDIA & ATTACHMENT
     const btnAttach = document.getElementById('btnAttach');
     const fileInput = document.getElementById('fileInput');
     btnAttach.addEventListener('click', () => fileInput.click());
@@ -643,7 +653,8 @@
           fileName: file.name,
           senderId: myUserId,
           senderName: myUserName || 'Pengguna',
-          replyTo: currentReply
+          user: myUserName || 'Pengguna',
+          replyTo: currentReply ? { ...currentReply } : null
         });
         fileInput.value = '';
         currentReply = null;
@@ -665,7 +676,8 @@
           image: evt.target.result,
           senderId: myUserId,
           senderName: myUserName || 'Pengguna',
-          replyTo: currentReply
+          user: myUserName || 'Pengguna',
+          replyTo: currentReply ? { ...currentReply } : null
         });
         imageInput.value = '';
         currentReply = null;
@@ -705,7 +717,8 @@
         image: imageData,
         senderId: myUserId,
         senderName: myUserName || 'Pengguna',
-        replyTo: currentReply
+        user: myUserName || 'Pengguna',
+        replyTo: currentReply ? { ...currentReply } : null
       });
 
       closeCamera();
@@ -747,7 +760,8 @@
                 audio: evt.target.result,
                 senderId: myUserId,
                 senderName: myUserName || 'Pengguna',
-                replyTo: currentReply
+                user: myUserName || 'Pengguna',
+                replyTo: currentReply ? { ...currentReply } : null
               });
               currentReply = null;
               replyPreview.classList.remove('active');
@@ -770,12 +784,14 @@
       }
     });
 
-    // 6. RENDER PESAN PADA BUBBLE CHAT (PERBAIKAN NAMA & REPLIES)
+    // 6. RENDER DUA HAL UTAMA: (1) NAMA DI ATAS PESAN, (2) BALASAN/REPLY QUOTE
     function renderMessage(data) {
+      if (!data) return;
+
       const item = document.createElement('div');
       item.classList.add('message');
       
-      if (data.user === 'System') {
+      if (data.user === 'System' || data.senderName === 'System') {
         item.classList.add('system');
         item.textContent = data.text;
       } else {
@@ -787,26 +803,27 @@
           item.classList.add('incoming');
         }
 
-        // PERBAIKAN: MENAMPILKAN NAMA PENGGUNA SECARA JELAS
+        // A. NAMA PENERIMA / PENGIRIM TAMPIL DI PALING ATAS
         const senderName = data.senderName || data.user || 'Pengguna';
         const displayName = isOutgoing ? `${senderName} (Anda)` : senderName;
         
-        let contentHtml = `<span class="message-username">${displayName}</span>`;
+        let contentHtml = `<span class="message-username">${escapeHtml(displayName)}</span>`;
 
-        // PERBAIKAN: MENAMPILKAN KOTAK KUTIPAN BALAS PESAN (REPLY QUOTE)
+        // B. JIKA PESAN INI MEMBALAS PESAN LAIN -> TAMPILKAN KOTAK KUTIPAN BALASAN
         if (data.replyTo && (data.replyTo.user || data.replyTo.text)) {
-          const replyUser = data.replyTo.user || 'Pengguna';
-          const replyText = data.replyTo.text || '[Media / File]';
+          const rUser = data.replyTo.user || 'Pengguna';
+          const rText = data.replyTo.text || '[Media]';
           contentHtml += `
             <div class="reply-quote-box">
-              <span class="reply-quote-user">👤 ${replyUser}</span>
-              <span class="reply-quote-text">${replyText}</span>
+              <span class="reply-quote-user">↩️ ${escapeHtml(rUser)}</span>
+              <span class="reply-quote-text">${escapeHtml(rText)}</span>
             </div>
           `;
         }
 
+        // C. ISI UTAMA PESAN
         if (data.text) {
-          contentHtml += `<div class="message-text">${data.text}</div>`;
+          contentHtml += `<div class="message-text">${escapeHtml(data.text)}</div>`;
         }
         if (data.image) {
           contentHtml += `<img src="${data.image}" onclick="event.stopPropagation(); window.open(this.src)" title="Klik memperbesar" />`;
@@ -815,15 +832,17 @@
           contentHtml += `<audio controls src="${data.audio}"></audio>`;
         }
         if (data.file) {
-          contentHtml += `<a class="file-link" href="${data.file}" download="${data.fileName}">📄 ${data.fileName}</a>`;
+          contentHtml += `<a class="file-link" href="${data.file}" download="${escapeHtml(data.fileName || 'file')}">📄 ${escapeHtml(data.fileName || 'File')}</a>`;
         }
 
         contentHtml += `<span class="time">${data.time || ''}</span>`;
         item.innerHTML = contentHtml;
 
-        // KETIK ATAU KLIK PESAN UNTUK MEMBALAS (REPLY)
-        item.addEventListener('click', () => {
-          setReplyMessage(senderName, data.text || (data.image ? '[Foto]' : data.audio ? '[Voice Note]' : '[File]'));
+        // D. KLIK PADA CHAT BUBBLE UNTUK MEMBALAS (REPLY)
+        item.addEventListener('click', (e) => {
+          if (e.target.tagName === 'A' || e.target.tagName === 'IMG' || e.target.tagName === 'AUDIO') return;
+          const msgSummary = data.text || (data.image ? '[Foto]' : data.audio ? '[Voice Note]' : data.file ? '[File]' : '[Pesan]');
+          setReplyMessage(senderName, msgSummary);
         });
       }
 
@@ -831,7 +850,17 @@
       messages.scrollTop = messages.scrollHeight;
     }
 
-    // 7. WEBRTC TELEPON & VIDEO CALL
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // 7. WEBRTC PANGGILA VOIP & VIDEO CALL
     const btnVoiceCall = document.getElementById('btnVoiceCall');
     const btnVideoCall = document.getElementById('btnVideoCall');
     const callModal = document.getElementById('callModal');
