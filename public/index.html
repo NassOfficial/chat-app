@@ -51,6 +51,23 @@
       z-index: 2;
     }
 
+    /* WATERMARK NAMA DEVELOPER STATIC (DI BELAKANG & TIDAK IKUT SCROLL) */
+    .chat-container::before {
+      content: "Developer: Nama Anda";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-20deg);
+      font-size: 32px;
+      font-weight: 800;
+      color: rgba(0, 0, 0, 0.06);
+      letter-spacing: 2px;
+      pointer-events: none;
+      white-space: nowrap;
+      user-select: none;
+      z-index: 1;
+    }
+
     /* PENYESUAIAN KHUSUS DESKTOP / PC / LAPTOP (DIPERBESAR SAMPING, DIPERPENDEK BAWAH) */
     @media (min-width: 501px) {
       body {
@@ -99,7 +116,7 @@
     .lock-banner.active { display: flex; }
     .btn-unlock { background: #fff; color: #075e54; border: none; padding: 4px 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 11px; }
 
-    /* AREA PESAN DENGAN WATERMARK DEVELOPER IN-BACKGROUND */
+    /* AREA PESAN */
     .chat-messages {
       flex: 1;
       padding: 16px 20px;
@@ -109,23 +126,6 @@
       gap: 10px;
       z-index: 2;
       position: relative;
-    }
-
-    /* WATERMARK NAMA DEVELOPER DI BACKGROUND CHAT */
-    .chat-messages::before {
-      content: "Developer: Nama Anda";
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-20deg);
-      font-size: 32px;
-      font-weight: 800;
-      color: rgba(0, 0, 0, 0.05);
-      letter-spacing: 2px;
-      pointer-events: none;
-      white-space: nowrap;
-      user-select: none;
-      z-index: 0;
     }
     
     .message {
@@ -138,7 +138,7 @@
       display: flex;
       flex-direction: column;
       cursor: pointer;
-      z-index: 1;
+      z-index: 2;
     }
     .message.outgoing { align-self: flex-end; background-color: #d9fdd3; border-top-right-radius: 0; }
     .message.incoming { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
@@ -213,6 +213,7 @@
       gap: 10px;
       flex-shrink: 0;
       position: relative;
+      z-index: 10;
     }
     .btn-action { background: none; border: none; font-size: 20px; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; flex-shrink: 0; }
     .btn-action:hover { background: #e0e0e0; }
@@ -314,7 +315,7 @@
       <button class="btn-unlock" id="btnUnlock">🔓 Buka Kunci</button>
     </div>
 
-    <!-- Area Tampilan Chat (Memiliki Watermark Background) -->
+    <!-- Area Tampilan Chat -->
     <div class="chat-messages" id="messages"></div>
 
     <!-- Indicator Reply Bar di Atas Input -->
@@ -387,7 +388,7 @@
       <div class="call-actions">
         <button type="button" class="btn-call-ctrl btn-accept" id="btnAcceptCall" style="display: none;">📞</button>
         <button type="button" class="btn-call-ctrl btn-decline" id="btnDeclineCall" style="display: none;">❌</button>
-        <button type="button" class="btn-call-ctrl btn-end" id="btnEndCall" style="display: none;">endCallLogic</button>
+        <button type="button" class="btn-call-ctrl btn-end" id="btnEndCall" style="display: none;">End</button>
       </div>
     </div>
 
