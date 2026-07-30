@@ -12,7 +12,7 @@
       background: linear-gradient(180deg, #00a884 0%, #00a884 130px, #d1d7db 130px, #d1d7db 100%);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       min-height: 100vh;
       min-height: 100dvh;
@@ -51,13 +51,16 @@
       z-index: 2;
     }
 
+    /* PENYESUAIAN KHUSUS DESKTOP / PC / LAPTOP */
     @media (min-width: 501px) {
       body {
-        padding: 12px 0;
+        padding: 20px 0;
+        gap: 12px;
       }
       .chat-container {
-        height: 88vh;
-        height: 88dvh;
+        height: 75vh;          /* Diperpendek agar proporsional */
+        max-height: 650px;     /* Batas tinggi maksimum di layar besar */
+        max-width: 500px;      /* Lebar pas untuk laptop */
         border-radius: 16px;
       }
     }
@@ -66,7 +69,7 @@
     .app-footer {
       width: 100%;
       text-align: center;
-      padding: 8px 12px;
+      padding: 6px 12px;
       font-size: 12px;
       color: #54656f;
       z-index: 1;
