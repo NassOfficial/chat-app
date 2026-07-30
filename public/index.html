@@ -2,548 +2,165 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>WhatsApp Web Clone</title>
   <style>
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-    }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #d1d7db;
-    }
-
-    body { 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      min-height: 100vh; 
-      min-height: 100dvh; 
-      padding: 0; 
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    body { background: #d1d7db; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
     
-    /* KONTAINER UTAMA */
-    .chat-container { 
-      width: 100%; 
-      max-width: 450px; 
-      height: 100vh; 
-      height: 100dvh; 
-      max-height: 100dvh; 
-      background: #efeae2; 
-      border-radius: 0; 
-      box-shadow: none; 
-      display: flex; 
-      flex-direction: column; 
-      overflow: hidden; 
-      position: relative; 
-    }
+    .chat-container { width: 100%; max-width: 450px; height: 100vh; background: #efeae2; display: flex; flex-direction: column; position: relative; }
+    @media (min-width: 501px) { .chat-container { height: 90vh; border-radius: 10px; overflow: hidden; } }
 
-    @media (min-width: 501px) {
-      .chat-container {
-        height: 90vh;
-        height: 90dvh;
-        max-height: 700px;
-        border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-      }
-    }
-
-    /* Watermark Teks Transparan */
-    .chat-watermark {
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-15deg);
-      font-size: 26px;
-      font-weight: 800;
-      color: rgba(0, 0, 0, 0.04);
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      pointer-events: none;
-      user-select: none;
-      z-index: 1;
-      white-space: nowrap;
-    }
+    .chat-header { background: #075e54; color: white; padding: 12px 16px; font-weight: bold; font-size: 16px; flex-shrink: 0; }
     
-    /* Header */
-    .chat-header { 
-      background: #075e54; 
-      color: white; 
-      padding: 10px 14px; 
-      display: flex; 
-      align-items: center; 
-      justify-content: space-between; 
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2); 
-      z-index: 10; 
-      flex-shrink: 0;
-    }
-    .header-left { display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 38px; height: 38px; background: #128c7e; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; color: #fff; }
-    .header-info { display: flex; flex-direction: column; }
-    .header-title { font-size: 15px; font-weight: 600; }
-    .header-status { font-size: 11px; opacity: 0.85; }
-
-    /* Tombol Header (Call & Lock) */
-    .header-call-btns { display: flex; gap: 4px; }
-    .btn-header-call { background: none; border: none; font-size: 18px; cursor: pointer; color: white; padding: 6px; border-radius: 50%; transition: 0.2s; }
-    .btn-header-call:hover { background: rgba(255,255,255,0.2); }
-
-    /* BANNER BUKA KUNCI CHAT */
-    .lock-overlay-banner {
-      display: none;
-      position: absolute;
-      top: 58px;
-      left: 0;
-      right: 0;
-      background: rgba(18, 140, 126, 0.95);
-      color: white;
-      padding: 8px 14px;
-      text-align: center;
-      z-index: 50;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      align-items: center;
-      justify-content: space-between;
-    }
-    .lock-overlay-banner.active { display: flex; }
-    .btn-unlock-banner {
-      background: #ffffff;
-      color: #075e54;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    /* Area Pesan */
-    .chat-messages { 
-      flex: 1; 
-      padding: 14px; 
-      overflow-y: auto; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 10px; 
-      background: transparent;
-      z-index: 2; 
-    }
-
-    .chat-messages::-webkit-scrollbar { width: 5px; }
-    .chat-messages::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 4px; }
+    .chat-messages { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
     
-    .message { 
-      max-width: 82%; 
-      padding: 7px 10px; 
-      border-radius: 8px; 
-      position: relative; 
-      box-shadow: 0 1px 2px rgba(0,0,0,0.12); 
-      word-break: break-word; 
-      display: flex; 
-      flex-direction: column; 
-      cursor: pointer;
-    }
-    .message.outgoing { align-self: flex-end; background-color: #d9fdd3; border-top-right-radius: 0; }
-    .message.incoming { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
-    .message.system { align-self: center; background-color: #ffffff99; color: #54656f; font-size: 11px; padding: 4px 12px; border-radius: 6px; box-shadow: none; text-align: center; cursor: default; }
+    /* BUBBLE PESAN */
+    .message { max-width: 80%; padding: 8px 12px; border-radius: 8px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.15); display: flex; flex-direction: column; cursor: pointer; }
+    .message.outgoing { align-self: flex-end; background-color: #d9fdd3; }
+    .message.incoming { align-self: flex-start; background-color: #ffffff; }
 
     /* 1. NAMA DITAMPILKAN DI ATAS PESAN */
-    .message-username { 
-      font-weight: 700; 
-      font-size: 12px; 
-      margin-bottom: 3px; 
-      display: block; 
-      color: #128c7e;
-    }
-    .message.outgoing .message-username { color: #005c4b; }
+    .message-author { font-size: 12px; font-weight: bold; color: #128c7e; margin-bottom: 4px; display: block; }
+    .message.outgoing .message-author { color: #005c4b; }
 
-    /* 2. KOTAK KUTIPAN BALAS PESAN (REPLY QUOTE BOX) */
+    /* 2. KOTAK BALASAN (REPLY QUOTE) DI DALAM PESAN */
     .reply-quote-box {
-      background: rgba(0, 0, 0, 0.06);
+      background: rgba(0, 0, 0, 0.07);
       border-left: 4px solid #128c7e;
-      padding: 5px 8px;
+      padding: 4px 8px;
       border-radius: 4px;
-      margin-top: 2px;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
       font-size: 11px;
-      display: flex;
-      flex-direction: column;
     }
-    .message.outgoing .reply-quote-box {
-      background: rgba(0, 0, 0, 0.05);
-      border-left-color: #075e54;
-    }
-    .reply-quote-user { font-weight: 700; color: #075e54; margin-bottom: 2px; }
-    .reply-quote-text { color: #3b4a54; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    .reply-quote-author { font-weight: bold; color: #075e54; display: block; margin-bottom: 2px; }
+    .reply-quote-content { color: #3b4a54; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 
-    .message-text { font-size: 14px; color: #111b21; line-height: 1.4; margin-top: 1px; }
+    .message-text { font-size: 14px; color: #111b21; word-break: break-word; }
+    .message-time { font-size: 10px; color: #667781; align-self: flex-end; margin-top: 4px; }
 
-    .message img { max-width: 100%; border-radius: 6px; margin-top: 4px; cursor: pointer; }
-    .message audio { max-width: 100%; height: 36px; margin-top: 4px; }
-    .file-link { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 6px 10px; border-radius: 6px; text-decoration: none; color: #075e54; font-weight: 500; font-size: 13px; margin-top: 4px; }
-    .time { font-size: 10px; color: #667781; align-self: flex-end; margin-top: 4px; }
-
-    /* EFEK KUNCI SENSOR (BLUR) */
-    .is-locked .message-text,
-    .is-locked .message-username,
-    .is-locked .header-title,
-    .is-locked .reply-quote-box,
-    .is-locked .message img,
-    .is-locked .message audio,
-    .is-locked .file-link {
-      filter: blur(7px) !important;
-      user-select: none !important;
-      pointer-events: none !important;
-    }
-
-    /* AREA PRATINJAU BALAS PESAN ATAS INPUT */
+    /* PRATINJAU BALASAN DI ATAS INPUT */
     .reply-preview-bar {
-      display: none;
-      background: #e2e8f0;
-      padding: 6px 12px;
-      border-left: 4px solid #128c7e;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 9;
-      font-size: 12px;
+      display: none; background: #e2e8f0; padding: 8px 12px; border-left: 4px solid #128c7e;
+      justify-content: space-between; align-items: center; font-size: 12px;
     }
     .reply-preview-bar.active { display: flex; }
-    .reply-preview-info { display: flex; flex-direction: column; overflow: hidden; }
-    .reply-preview-user { font-weight: bold; color: #128c7e; }
-    .reply-preview-text { color: #4a5568; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .btn-cancel-reply { background: none; border: none; font-size: 16px; cursor: pointer; color: #718096; padding: 2px 6px; }
+    .btn-cancel-reply { background: none; border: none; font-weight: bold; cursor: pointer; color: #666; font-size: 14px; }
 
-    /* FOOTER TOOLBAR INPUT */
-    .chat-form { 
-      display: flex; 
-      padding: 8px 10px; 
-      background: #f0f2f5; 
-      align-items: center; 
-      gap: 4px; 
-      z-index: 10; 
-      flex-shrink: 0; 
-      width: 100%;
-      box-sizing: border-box;
-    }
+    /* INPUT FORM */
+    .chat-form { display: flex; padding: 8px; background: #f0f2f5; gap: 6px; flex-shrink: 0; }
+    .chat-form input { flex: 1; padding: 10px 14px; border: none; border-radius: 20px; outline: none; font-size: 14px; }
+    .btn-send { background: #075e54; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 16px; }
 
-    .btn-action { 
-      background: none; 
-      border: none; 
-      font-size: 17px; 
-      cursor: pointer; 
-      padding: 4px; 
-      border-radius: 50%; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .btn-action:hover { background: #e0e0e0; }
-    .btn-record.recording { color: red; animation: pulse 1s infinite; }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.15); }
-      100% { transform: scale(1); }
-    }
-
-    .chat-form input[type="text"] { 
-      flex: 1; 
-      min-width: 0;
-      width: 0;
-      padding: 9px 12px; 
-      border: none; 
-      border-radius: 20px; 
-      outline: none; 
-      font-size: 14px; 
-      background: #fff; 
-    }
-
-    .btn-send { 
-      padding: 0; 
-      border: none; 
-      background: #075e54; 
-      color: white; 
-      border-radius: 50%; 
-      cursor: pointer; 
-      width: 38px; 
-      height: 38px; 
-      font-size: 15px;
-      font-weight: bold; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      flex-shrink: 0; 
-      margin-left: 2px;
-    }
-
-    .chat-footer-credit { text-align: center; padding: 5px 10px; background: #e9edef; font-size: 11px; color: #54656f; border-top: 1px solid #d1d7db; z-index: 10; flex-shrink: 0; }
-    .chat-footer-credit strong { color: #075e54; }
-
-    /* MODAL INPUT NAMA & PASSWORD */
-    .app-modal {
-      display: none;
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 300;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    .app-modal.active { display: flex; }
-    .modal-card {
-      background: white;
-      padding: 22px;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 320px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .modal-card h3 { font-size: 16px; color: #075e54; }
-    .modal-card p { font-size: 12px; color: #666; }
-    .modal-card input {
-      padding: 10px 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      outline: none;
-      font-size: 14px;
-    }
-    .modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
-    .btn-modal { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
-    .btn-modal-primary { background: #075e54; color: white; }
-    .btn-modal-secondary { background: #e0e0e0; color: #333; }
-
-    /* MODAL PANGGILAN */
-    .call-modal { display: none; position: absolute; inset: 0; background: #111b21; z-index: 200; flex-direction: column; justify-content: space-between; align-items: center; padding: 24px 16px; color: white; }
-    .call-modal.active { display: flex; }
-
-    .call-info { text-align: center; margin-top: 20px; }
-    .call-avatar { width: 80px; height: 80px; background: #128c7e; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; }
-    .call-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
-    .call-status { font-size: 13px; color: #8696a0; }
-
-    .video-container { position: relative; width: 100%; flex: 1; margin: 16px 0; background: #000; border-radius: 12px; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-    video#remoteVideo { width: 100%; height: 100%; object-fit: cover; }
-    video#localVideo { position: absolute; bottom: 12px; right: 12px; width: 90px; height: 130px; border-radius: 8px; object-fit: cover; border: 2px solid #fff; background: #222; }
-
-    .call-actions { display: flex; gap: 20px; margin-bottom: 20px; }
-    .btn-call-ctrl { width: 56px; height: 56px; border-radius: 50%; border: none; font-size: 22px; cursor: pointer; display: flex; justify-content: center; align-items: center; color: white; }
-    .btn-accept { background-color: #25d366; }
-    .btn-decline, .btn-end { background-color: #ea0038; }
-
-    /* Modal Live Camera */
-    .cam-modal { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; flex-direction: column; justify-content: center; align-items: center; gap: 16px; padding: 20px; }
-    .cam-modal.active { display: flex; }
-    .cam-modal video { width: 100%; max-height: 60%; border-radius: 12px; background: #000; object-fit: cover; }
-    .cam-controls { display: flex; gap: 16px; }
-    .btn-cam { padding: 10px 20px; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; }
-    .btn-snap { background: #128c7e; color: white; }
-    .btn-close-cam { background: #d32f2f; color: white; }
+    /* MODAL NAMA */
+    .modal-overlay { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: white; padding: 20px; border-radius: 10px; width: 100%; max-width: 300px; text-align: center; }
+    .modal-box h3 { margin-bottom: 8px; color: #075e54; }
+    .modal-box input { width: 100%; padding: 10px; margin: 12px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+    .modal-box button { background: #075e54; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
   </style>
 </head>
 <body>
 
-  <div class="chat-container" id="chatApp">
-    <!-- Header -->
-    <div class="chat-header">
-      <div class="header-left">
-        <div class="avatar">G</div>
-        <div class="header-info">
-          <div class="header-title" id="headerTitle">Grup WhatsApp Media</div>
-          <div class="header-status" id="status">Menghubungkan...</div>
-        </div>
-      </div>
-      <!-- Tombol Header (Call & Lock) -->
-      <div class="header-call-btns">
-        <button type="button" class="btn-header-call" id="btnLock" title="1-Klik Kunci Chat">🔒</button>
-        <button type="button" class="btn-header-call" id="btnVoiceCall" title="Telepon Suara">📞</button>
-        <button type="button" class="btn-header-call" id="btnVideoCall" title="Panggilan Video">📹</button>
-      </div>
-    </div>
-
-    <!-- BANNER PEMBERITAHUAN KUNCI -->
-    <div class="lock-overlay-banner" id="lockBanner">
-      <span>🔒 Pesan & Nama Disensor</span>
-      <button class="btn-unlock-banner" id="btnUnlock">🔓 Buka Kunci</button>
-    </div>
+  <div class="chat-container">
+    <div class="chat-header">Grup WhatsApp</div>
     
-    <!-- Watermark Teks Transparan -->
-    <div class="chat-watermark">Nama Developer</div>
-
-    <!-- Area Chat -->
     <div class="chat-messages" id="messages"></div>
 
-    <!-- Area Pratinjau Balas Pesan (Reply Preview) -->
-    <div class="reply-preview-bar" id="replyPreview">
-      <div class="reply-preview-info">
-        <span class="reply-preview-user" id="replyPreviewUser">Balas Pesan</span>
-        <span class="reply-preview-text" id="replyPreviewText">Isi pesan...</span>
+    <!-- Indicator membalas pesan -->
+    <div class="reply-preview-bar" id="replyBar">
+      <div>
+        <strong id="replyUser" style="color:#075e54; display:block;">-</strong>
+        <span id="replyText" style="color:#555;">-</span>
       </div>
-      <button type="button" class="btn-cancel-reply" id="btnCancelReply">✕</button>
+      <button class="btn-cancel-reply" id="btnCancelReply">✕</button>
     </div>
-    
-    <!-- Input Form Toolbar -->
+
     <form class="chat-form" id="form">
-      <input type="file" id="fileInput" hidden accept="*/*" />
-      <input type="file" id="imageInput" hidden accept="image/*" />
-
-      <button type="button" class="btn-action" id="btnAttach" title="Akses Folder / File">📁</button>
-      <button type="button" class="btn-action" id="btnGallery" title="Pilih Gambar">🖼️</button>
-      <button type="button" class="btn-action" id="btnLiveCam" title="Live Camera">📸</button>
-      <button type="button" class="btn-action btn-record" id="btnMic" title="Pesan Suara">🎤</button>
-
-      <input id="input" type="text" autocomplete="off" placeholder="Ketik pesan..." />
-      <button type="submit" class="btn-send" title="Kirim Pesan">➤</button>
+      <input type="text" id="input" placeholder="Ketik pesan..." autocomplete="off" />
+      <button type="submit" class="btn-send">➤</button>
     </form>
+  </div>
 
-    <!-- Footer Credit Developer -->
-    <div class="chat-footer-credit">
-      Developed with ❤️ by <strong>Nama Anda</strong>
-    </div>
-
-    <!-- MODAL POPUP INPUT NAMA WAJIB PERTAMA KALI -->
-    <div class="app-modal" id="nameModal">
-      <div class="modal-card">
-        <h3>Selamat Datang! 👋</h3>
-        <p>Silakan masukkan nama Anda sebelum mulai mengobrol:</p>
-        <input type="text" id="usernameInput" placeholder="Contoh: Budi Utama" maxlength="20" autofocus />
-        <div class="modal-btns">
-          <button type="button" class="btn-modal btn-modal-primary" id="btnSaveName">Simpan & Masuk</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL BUKA / SET PASSWORD KUNCI -->
-    <div class="app-modal" id="passwordModal">
-      <div class="modal-card">
-        <h3 id="pwdModalTitle">Buka Kunci Chat 🔓</h3>
-        <p id="pwdModalDesc">Masukkan kata sandi untuk membuka sensor chat:</p>
-        <input type="password" id="passwordInput" placeholder="Masukkan password..." />
-        <div class="modal-btns">
-          <button type="button" class="btn-modal btn-modal-secondary" id="btnCancelPwd">Batal</button>
-          <button type="button" class="btn-modal btn-modal-primary" id="btnSubmitPwd">Konfirmasi</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL PANGGILAN WEBRTC -->
-    <div class="call-modal" id="callModal">
-      <div class="call-info">
-        <div class="call-avatar" id="callAvatar">📞</div>
-        <div class="call-title" id="callTitle">Panggilan Suara</div>
-        <div class="call-status" id="callStatusText">Memanggil...</div>
-      </div>
-
-      <div class="video-container" id="videoContainer" style="display: none;">
-        <video id="remoteVideo" autoplay playsinline></video>
-        <video id="localVideo" autoplay playsinline muted></video>
-      </div>
-
-      <div class="call-actions">
-        <button type="button" class="btn-call-ctrl btn-accept" id="btnAcceptCall" style="display: none;">📞</button>
-        <button type="button" class="btn-call-ctrl btn-decline" id="btnDeclineCall" style="display: none;">❌</button>
-        <button type="button" class="btn-call-ctrl btn-end" id="btnEndCall" style="display: none;">📵</button>
-      </div>
-    </div>
-
-    <!-- MODAL LIVE CAMERA -->
-    <div class="cam-modal" id="camModal">
-      <video id="webcam" autoplay playsinline></video>
-      <div class="cam-controls">
-        <button type="button" class="btn-cam btn-snap" id="btnSnap">Ambil Foto</button>
-        <button type="button" class="btn-cam btn-close-cam" id="btnCloseCam">Tutup</button>
-      </div>
-      <canvas id="canvas" style="display:none;"></canvas>
+  <!-- MODAL NAMA WAJIB INPUT AWAL -->
+  <div class="modal-overlay" id="nameModal">
+    <div class="modal-box">
+      <h3>Masukkan Nama Anda</h3>
+      <p style="font-size: 12px; color: #666;">Nama ini akan muncul di atas setiap pesan yang Anda kirim.</p>
+      <input type="text" id="nameInput" placeholder="Ketik nama di sini..." maxlength="20" autofocus />
+      <button type="button" id="btnSaveName">Mulai Chatting</button>
     </div>
   </div>
 
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
-    const form = document.getElementById('form');
-    const input = document.getElementById('input');
-    const messages = document.getElementById('messages');
-    const status = document.getElementById('status');
-    const chatApp = document.getElementById('chatApp');
 
-    // 1. PENGELOLAAN USER ID & NAMA
-    let myUserId = localStorage.getItem('chat_user_id');
-    if (!myUserId) {
-      myUserId = 'user_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('chat_user_id', myUserId);
-    }
+    // 1. ID UNIK & NAMA PENGGUNA
+    let myUserId = sessionStorage.getItem('chat_user_id') || ('id_' + Math.random().toString(36).substr(2, 9));
+    sessionStorage.setItem('chat_user_id', myUserId);
 
-    let myUserName = localStorage.getItem('chat_username');
+    let myUserName = sessionStorage.getItem('chat_username');
     const nameModal = document.getElementById('nameModal');
-    const usernameInput = document.getElementById('usernameInput');
+    const nameInput = document.getElementById('nameInput');
     const btnSaveName = document.getElementById('btnSaveName');
 
-    // Jika nama belum ada, modal nama WAJIB tampil & tidak bisa ditutup
+    // Tampilkan modal jika nama belum diisi di sesi ini
     if (!myUserName) {
       nameModal.classList.add('active');
     }
 
-    btnSaveName.addEventListener('click', saveUsername);
-    usernameInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') saveUsername();
-    });
+    btnSaveName.addEventListener('click', saveName);
+    nameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') saveName(); });
 
-    function saveUsername() {
-      const val = usernameInput.value.trim();
+    function saveName() {
+      const val = nameInput.value.trim();
       if (val) {
         myUserName = val;
-        localStorage.setItem('chat_username', val);
+        sessionStorage.setItem('chat_username', val);
         nameModal.classList.remove('active');
       } else {
-        alert('Nama pengguna wajib diisi!');
+        alert('Nama tidak boleh kosong!');
       }
     }
 
-    // 2. KONEKSI SOCKET.IO
-    socket.on('connect', () => { status.textContent = "online"; });
-    socket.on('disconnect', () => { status.textContent = "terputus"; });
+    // 2. TAMPILKAN RIWAYAT & PESAN BARU
+    const messages = document.getElementById('messages');
 
     socket.on('load history', (history) => {
       messages.innerHTML = '';
-      if (Array.isArray(history)) {
-        history.forEach(data => renderMessage(data));
-      }
+      if (Array.isArray(history)) history.forEach(renderMessage);
     });
 
     socket.on('chat message', (data) => {
       renderMessage(data);
     });
 
-    // 3. FITUR BALAS PESAN (REPLY QUOTE)
-    let currentReply = null;
-    const replyPreview = document.getElementById('replyPreview');
-    const replyPreviewUser = document.getElementById('replyPreviewUser');
-    const replyPreviewText = document.getElementById('replyPreviewText');
+    // 3. FITUR BALAS PESAN
+    let activeReply = null;
+    const replyBar = document.getElementById('replyBar');
+    const replyUser = document.getElementById('replyUser');
+    const replyText = document.getElementById('replyText');
     const btnCancelReply = document.getElementById('btnCancelReply');
 
-    function setReplyMessage(user, text) {
-      currentReply = { user, text };
-      replyPreviewUser.textContent = `Membalas ${user}`;
-      replyPreviewText.textContent = text || '[Media / File]';
-      replyPreview.classList.add('active');
-      input.focus();
+    function setReply(senderName, msgText) {
+      activeReply = { user: senderName, text: msgText };
+      replyUser.textContent = `Membalas: ${senderName}`;
+      replyText.textContent = msgText;
+      replyBar.classList.add('active');
+      document.getElementById('input').focus();
     }
 
     btnCancelReply.addEventListener('click', () => {
-      currentReply = null;
-      replyPreview.classList.remove('active');
+      activeReply = null;
+      replyBar.classList.remove('active');
     });
 
-    // FORM SUBMIT UTAMA PESAN TEKS
+    // 4. KIRIM PESAN
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!myUserName) {
@@ -553,485 +170,63 @@
 
       const text = input.value.trim();
       if (text) {
-        const payload = {
-          text: text,
+        socket.emit('chat message', {
           senderId: myUserId,
           senderName: myUserName,
-          user: myUserName,
-          replyTo: currentReply ? { ...currentReply } : null
-        };
-        socket.emit('chat message', payload);
+          text: text,
+          replyTo: activeReply ? { ...activeReply } : null
+        });
+
         input.value = '';
-        currentReply = null;
-        replyPreview.classList.remove('active');
+        activeReply = null;
+        replyBar.classList.remove('active');
       }
     });
 
-    // 4. FITUR KUNCI CHAT & PASSWORD
-    const btnLock = document.getElementById('btnLock');
-    const btnUnlock = document.getElementById('btnUnlock');
-    const lockBanner = document.getElementById('lockBanner');
-    const passwordModal = document.getElementById('passwordModal');
-    const passwordInput = document.getElementById('passwordInput');
-    const pwdModalTitle = document.getElementById('pwdModalTitle');
-    const pwdModalDesc = document.getElementById('pwdModalDesc');
-    const btnSubmitPwd = document.getElementById('btnSubmitPwd');
-    const btnCancelPwd = document.getElementById('btnCancelPwd');
-
-    btnLock.addEventListener('click', lockApp);
-    btnUnlock.addEventListener('click', openPasswordModal);
-
-    function lockApp() {
-      chatApp.classList.add('is-locked');
-      lockBanner.classList.add('active');
-    }
-
-    function unlockApp() {
-      chatApp.classList.remove('is-locked');
-      lockBanner.classList.remove('active');
-    }
-
-    function openPasswordModal() {
-      const savedPwd = localStorage.getItem('chat_password');
-      if (!savedPwd) {
-        pwdModalTitle.textContent = "Buat Password Kunci 🔒";
-        pwdModalDesc.textContent = "Masukkan password baru untuk menyensor chat:";
-      } else {
-        pwdModalTitle.textContent = "Buka Kunci Chat 🔓";
-        pwdModalDesc.textContent = "Masukkan password Anda untuk membuka sensor:";
-      }
-      passwordInput.value = '';
-      passwordModal.classList.add('active');
-      passwordInput.focus();
-    }
-
-    btnCancelPwd.addEventListener('click', () => {
-      passwordModal.classList.remove('active');
-    });
-
-    btnSubmitPwd.addEventListener('click', handlePasswordSubmit);
-    passwordInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') handlePasswordSubmit();
-    });
-
-    function handlePasswordSubmit() {
-      const enteredPwd = passwordInput.value.trim();
-      const savedPwd = localStorage.getItem('chat_password');
-
-      if (!enteredPwd) {
-        alert('Password tidak boleh kosong!');
-        return;
-      }
-
-      if (!savedPwd) {
-        localStorage.setItem('chat_password', enteredPwd);
-        alert('Password berhasil disimpan!');
-        unlockApp();
-        passwordModal.classList.remove('active');
-      } else {
-        if (enteredPwd === savedPwd) {
-          unlockApp();
-          passwordModal.classList.remove('active');
-        } else {
-          alert('Password salah!');
-        }
-      }
-    }
-
-    // 5. KIRIM MEDIA & ATTACHMENT
-    const btnAttach = document.getElementById('btnAttach');
-    const fileInput = document.getElementById('fileInput');
-    btnAttach.addEventListener('click', () => fileInput.click());
-
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        socket.emit('chat message', {
-          file: evt.target.result,
-          fileName: file.name,
-          senderId: myUserId,
-          senderName: myUserName || 'Pengguna',
-          user: myUserName || 'Pengguna',
-          replyTo: currentReply ? { ...currentReply } : null
-        });
-        fileInput.value = '';
-        currentReply = null;
-        replyPreview.classList.remove('active');
-      };
-      reader.readAsDataURL(file);
-    });
-
-    const btnGallery = document.getElementById('btnGallery');
-    const imageInput = document.getElementById('imageInput');
-    btnGallery.addEventListener('click', () => imageInput.click());
-
-    imageInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        socket.emit('chat message', {
-          image: evt.target.result,
-          senderId: myUserId,
-          senderName: myUserName || 'Pengguna',
-          user: myUserName || 'Pengguna',
-          replyTo: currentReply ? { ...currentReply } : null
-        });
-        imageInput.value = '';
-        currentReply = null;
-        replyPreview.classList.remove('active');
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // LIVE CAMERA
-    const btnLiveCam = document.getElementById('btnLiveCam');
-    const camModal = document.getElementById('camModal');
-    const webcam = document.getElementById('webcam');
-    const btnSnap = document.getElementById('btnSnap');
-    const btnCloseCam = document.getElementById('btnCloseCam');
-    const canvas = document.getElementById('canvas');
-    let streamTrack = null;
-
-    btnLiveCam.addEventListener('click', async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
-        webcam.srcObject = stream;
-        streamTrack = stream;
-        camModal.classList.add('active');
-      } catch (err) {
-        alert('Tidak dapat mengakses kamera: ' + err.message);
-      }
-    });
-
-    btnSnap.addEventListener('click', () => {
-      canvas.width = webcam.videoWidth;
-      canvas.height = webcam.videoHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(webcam, 0, 0, canvas.width, canvas.height);
-      const imageData = canvas.toDataURL('image/jpeg');
-      
-      socket.emit('chat message', {
-        image: imageData,
-        senderId: myUserId,
-        senderName: myUserName || 'Pengguna',
-        user: myUserName || 'Pengguna',
-        replyTo: currentReply ? { ...currentReply } : null
-      });
-
-      closeCamera();
-      currentReply = null;
-      replyPreview.classList.remove('active');
-    });
-
-    btnCloseCam.addEventListener('click', closeCamera);
-
-    function closeCamera() {
-      if (streamTrack) {
-        streamTrack.getTracks().forEach(track => track.stop());
-      }
-      camModal.classList.remove('active');
-    }
-
-    // VOICE NOTE
-    const btnMic = document.getElementById('btnMic');
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let isRecording = false;
-
-    btnMic.addEventListener('click', async () => {
-      if (!isRecording) {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
-          audioChunks = [];
-
-          mediaRecorder.ondataavailable = (e) => {
-            if (e.data.size > 0) audioChunks.push(e.data);
-          };
-
-          mediaRecorder.onstop = () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-            const reader = new FileReader();
-            reader.onload = (evt) => {
-              socket.emit('chat message', {
-                audio: evt.target.result,
-                senderId: myUserId,
-                senderName: myUserName || 'Pengguna',
-                user: myUserName || 'Pengguna',
-                replyTo: currentReply ? { ...currentReply } : null
-              });
-              currentReply = null;
-              replyPreview.classList.remove('active');
-            };
-            reader.readAsDataURL(audioBlob);
-            
-            stream.getTracks().forEach(track => track.stop());
-          };
-
-          mediaRecorder.start();
-          isRecording = true;
-          btnMic.classList.add('recording');
-        } catch (err) {
-          alert('Akses mikrofon ditolak: ' + err.message);
-        }
-      } else {
-        mediaRecorder.stop();
-        isRecording = false;
-        btnMic.classList.remove('recording');
-      }
-    });
-
-    // 6. RENDER DUA HAL UTAMA: (1) NAMA DI ATAS PESAN, (2) BALASAN/REPLY QUOTE
+    // 5. RENDER PESAN KE HAKAMAN CHAT
     function renderMessage(data) {
       if (!data) return;
 
       const item = document.createElement('div');
       item.classList.add('message');
-      
-      if (data.user === 'System' || data.senderName === 'System') {
-        item.classList.add('system');
-        item.textContent = data.text;
-      } else {
-        const isOutgoing = (data.senderId === myUserId);
-        
-        if (isOutgoing) {
-          item.classList.add('outgoing');
-        } else {
-          item.classList.add('incoming');
-        }
 
-        // A. NAMA PENERIMA / PENGIRIM TAMPIL DI PALING ATAS
-        const senderName = data.senderName || data.user || 'Pengguna';
-        const displayName = isOutgoing ? `${senderName} (Anda)` : senderName;
-        
-        let contentHtml = `<span class="message-username">${escapeHtml(displayName)}</span>`;
+      const isOutgoing = (data.senderId === myUserId);
+      item.classList.add(isOutgoing ? 'outgoing' : 'incoming');
 
-        // B. JIKA PESAN INI MEMBALAS PESAN LAIN -> TAMPILKAN KOTAK KUTIPAN BALASAN
-        if (data.replyTo && (data.replyTo.user || data.replyTo.text)) {
-          const rUser = data.replyTo.user || 'Pengguna';
-          const rText = data.replyTo.text || '[Media]';
-          contentHtml += `
-            <div class="reply-quote-box">
-              <span class="reply-quote-user">↩️ ${escapeHtml(rUser)}</span>
-              <span class="reply-quote-text">${escapeHtml(rText)}</span>
-            </div>
-          `;
-        }
+      // (A) NAMA TAMPIL DI ATAS PESAN
+      const authorName = data.senderName || 'Pengguna';
+      let html = `<span class="message-author">${escapeHtml(authorName)}${isOutgoing ? ' (Anda)' : ''}</span>`;
 
-        // C. ISI UTAMA PESAN
-        if (data.text) {
-          contentHtml += `<div class="message-text">${escapeHtml(data.text)}</div>`;
-        }
-        if (data.image) {
-          contentHtml += `<img src="${data.image}" onclick="event.stopPropagation(); window.open(this.src)" title="Klik memperbesar" />`;
-        }
-        if (data.audio) {
-          contentHtml += `<audio controls src="${data.audio}"></audio>`;
-        }
-        if (data.file) {
-          contentHtml += `<a class="file-link" href="${data.file}" download="${escapeHtml(data.fileName || 'file')}">📄 ${escapeHtml(data.fileName || 'File')}</a>`;
-        }
-
-        contentHtml += `<span class="time">${data.time || ''}</span>`;
-        item.innerHTML = contentHtml;
-
-        // D. KLIK PADA CHAT BUBBLE UNTUK MEMBALAS (REPLY)
-        item.addEventListener('click', (e) => {
-          if (e.target.tagName === 'A' || e.target.tagName === 'IMG' || e.target.tagName === 'AUDIO') return;
-          const msgSummary = data.text || (data.image ? '[Foto]' : data.audio ? '[Voice Note]' : data.file ? '[File]' : '[Pesan]');
-          setReplyMessage(senderName, msgSummary);
-        });
+      // (B) KOTAK KUTIPAN BALASAN (JIKA ADA)
+      if (data.replyTo && data.replyTo.user) {
+        html += `
+          <div class="reply-quote-box">
+            <span class="reply-quote-author">↩️ ${escapeHtml(data.replyTo.user)}</span>
+            <span class="reply-quote-content">${escapeHtml(data.replyTo.text)}</span>
+          </div>
+        `;
       }
+
+      // (C) ISI TEKS PESAN
+      if (data.text) {
+        html += `<div class="message-text">${escapeHtml(data.text)}</div>`;
+      }
+
+      html += `<span class="message-time">${data.time || ''}</span>`;
+      item.innerHTML = html;
+
+      // KLIK PESAN UNTUK MEMBALAS (REPLY)
+      item.addEventListener('click', () => {
+        setReply(authorName, data.text || '[Media]');
+      });
 
       messages.appendChild(item);
       messages.scrollTop = messages.scrollHeight;
     }
 
-    function escapeHtml(text) {
-      if (!text) return '';
-      return text.toString()
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    // 7. WEBRTC PANGGILA VOIP & VIDEO CALL
-    const btnVoiceCall = document.getElementById('btnVoiceCall');
-    const btnVideoCall = document.getElementById('btnVideoCall');
-    const callModal = document.getElementById('callModal');
-    const callAvatar = document.getElementById('callAvatar');
-    const callTitle = document.getElementById('callTitle');
-    const callStatusText = document.getElementById('callStatusText');
-    const videoContainer = document.getElementById('videoContainer');
-    const localVideo = document.getElementById('localVideo');
-    const remoteVideo = document.getElementById('remoteVideo');
-    const btnAcceptCall = document.getElementById('btnAcceptCall');
-    const btnDeclineCall = document.getElementById('btnDeclineCall');
-    const btnEndCall = document.getElementById('btnEndCall');
-
-    let peerConnection = null;
-    let localStream = null;
-    let targetSocketId = null;
-    let pendingOffer = null;
-    let activeCallType = 'voice';
-
-    const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-
-    btnVoiceCall.addEventListener('click', () => startCall('voice'));
-    btnVideoCall.addEventListener('click', () => startCall('video'));
-
-    async function startCall(type) {
-      activeCallType = type;
-      showCallUI(type, 'Memanggil...', true);
-
-      try {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: (type === 'video'), audio: true });
-
-        if (type === 'video') {
-          localVideo.srcObject = localStream;
-          videoContainer.style.display = 'flex';
-        }
-
-        peerConnection = createPeerConnection();
-        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-
-        socket.emit('call-user', { offer, callType: type });
-      } catch (err) {
-        alert('Gagal memulai panggilan: ' + err.message);
-        endCallLogic();
-      }
-    }
-
-    socket.on('call-made', (data) => {
-      targetSocketId = data.from;
-      pendingOffer = data.offer;
-      activeCallType = data.callType;
-      showIncomingCallUI(data.user, data.callType);
-    });
-
-    socket.on('answer-made', async (data) => {
-      targetSocketId = data.from;
-      callStatusText.textContent = "Panggilan Terhubung";
-      if (peerConnection) {
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
-      }
-    });
-
-    socket.on('ice-candidate', async (data) => {
-      if (peerConnection && data.candidate) {
-        try {
-          await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-        } catch (e) {}
-      }
-    });
-
-    socket.on('call-rejected', () => {
-      alert('Panggilan ditolak');
-      endCallLogic();
-    });
-
-    socket.on('call-ended', () => {
-      endCallLogic();
-    });
-
-    btnAcceptCall.addEventListener('click', async () => {
-      btnAcceptCall.style.display = 'none';
-      btnDeclineCall.style.display = 'none';
-      btnEndCall.style.display = 'flex';
-      callStatusText.textContent = "Panggilan Terhubung";
-
-      try {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: (activeCallType === 'video'), audio: true });
-
-        if (activeCallType === 'video') {
-          localVideo.srcObject = localStream;
-          videoContainer.style.display = 'flex';
-        }
-
-        peerConnection = createPeerConnection();
-        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
-        const answer = await peerConnection.createAnswer();
-        await peerConnection.setLocalDescription(answer);
-
-        socket.emit('make-answer', { answer, to: targetSocketId });
-      } catch (err) {
-        alert('Gagal menerima panggilan: ' + err.message);
-        endCallLogic();
-      }
-    });
-
-    btnDeclineCall.addEventListener('click', () => {
-      socket.emit('reject-call', { to: targetSocketId });
-      endCallLogic();
-    });
-
-    btnEndCall.addEventListener('click', () => {
-      socket.emit('end-call', { to: targetSocketId });
-      endCallLogic();
-    });
-
-    function createPeerConnection() {
-      const pc = new RTCPeerConnection(rtcConfig);
-      pc.onicecandidate = (e) => {
-        if (e.candidate && targetSocketId) socket.emit('ice-candidate', { candidate: e.candidate, to: targetSocketId });
-      };
-      pc.ontrack = (e) => {
-        remoteVideo.srcObject = e.streams[0];
-        if (activeCallType === 'video') videoContainer.style.display = 'flex';
-      };
-      return pc;
-    }
-
-    function showCallUI(type, statusText, isCaller) {
-      callModal.classList.add('active');
-      callTitle.textContent = (type === 'video') ? 'Panggilan Video' : 'Panggilan Suara';
-      callAvatar.textContent = (type === 'video') ? '📹' : '📞';
-      callStatusText.textContent = statusText;
-
-      videoContainer.style.display = 'none';
-      btnAcceptCall.style.display = 'none';
-      btnDeclineCall.style.display = 'none';
-      btnEndCall.style.display = isCaller ? 'flex' : 'none';
-    }
-
-    function showIncomingCallUI(username, type) {
-      callModal.classList.add('active');
-      callTitle.textContent = username;
-      callAvatar.textContent = (type === 'video') ? '📹' : '📞';
-      callStatusText.textContent = `Panggilan ${type === 'video' ? 'Video' : 'Suara'} Masuk...`;
-
-      videoContainer.style.display = 'none';
-      btnAcceptCall.style.display = 'flex';
-      btnDeclineCall.style.display = 'flex';
-      btnEndCall.style.display = 'none';
-    }
-
-    function endCallLogic() {
-      if (peerConnection) {
-        peerConnection.close();
-        peerConnection = null;
-      }
-      if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-        localStream = null;
-      }
-      localVideo.srcObject = null;
-      remoteVideo.srcObject = null;
-
-      callModal.classList.remove('active');
-      videoContainer.style.display = 'none';
-      targetSocketId = null;
-      pendingOffer = null;
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
   </script>
 </body>
