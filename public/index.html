@@ -6,15 +6,79 @@
   <title>WhatsApp Web Complete</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: #d1d7db; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
     
-    .chat-container { width: 100%; max-width: 450px; height: 100vh; background: #efeae2; display: flex; flex-direction: column; position: relative; overflow: hidden; }
-    @media (min-width: 501px) { .chat-container { height: 90vh; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); } }
+    /* BACKGROUND CENTERED ALA WHATSAPP WEB */
+    body {
+      background: linear-gradient(180deg, #00a884 0%, #00a884 130px, #d1d7db 130px, #d1d7db 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 100vh;
+      min-height: 100dvh;
+      margin: 0;
+      padding: 0;
+      position: relative;
+    }
+
+    /* WATERMARK BRANDING DEVELOPER DI BACKGROUND */
+    .bg-developer-tag {
+      position: absolute;
+      top: 14px;
+      left: 20px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    /* WADAH CHAT RESPONSIF */
+    .chat-container {
+      width: 100%;
+      max-width: 480px;
+      height: 100vh;
+      height: 100dvh;
+      background: #efeae2;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.22);
+      z-index: 2;
+    }
+
+    @media (min-width: 501px) {
+      body {
+        padding: 12px 0;
+      }
+      .chat-container {
+        height: 88vh;
+        height: 88dvh;
+        border-radius: 16px;
+      }
+    }
+
+    /* FOOTER */
+    .app-footer {
+      width: 100%;
+      text-align: center;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #54656f;
+      z-index: 1;
+    }
+    .app-footer strong {
+      color: #075e54;
+    }
 
     /* HEADER */
-    .chat-header { background: #075e54; color: white; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; z-index: 10; flex-shrink: 0; }
-    .header-left { display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 38px; height: 38px; background: #128c7e; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; color: #fff; }
+    .chat-header { background: #075e54; color: white; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 10; flex-shrink: 0; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 40px; height: 40px; background: #128c7e; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; color: #fff; }
     .header-info { display: flex; flex-direction: column; }
     .header-title { font-size: 15px; font-weight: 600; }
     .header-status { font-size: 11px; opacity: 0.85; }
@@ -31,7 +95,7 @@
     /* AREA PESAN */
     .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; z-index: 2; }
     
-    .message { max-width: 82%; padding: 7px 10px; border-radius: 8px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.12); word-break: break-word; display: flex; flex-direction: column; cursor: pointer; }
+    .message { max-width: 82%; padding: 8px 12px; border-radius: 8px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.12); word-break: break-word; display: flex; flex-direction: column; cursor: pointer; }
     .message.outgoing { align-self: flex-end; background-color: #d9fdd3; border-top-right-radius: 0; }
     .message.incoming { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
 
@@ -59,20 +123,88 @@
     .is-locked .file-link { filter: blur(7px) !important; user-select: none !important; pointer-events: none !important; }
 
     /* PRATINJAU BALASAN (REPLY BAR ATAS INPUT) */
-    .reply-preview-bar { display: none; background: #e2e8f0; padding: 6px 12px; border-left: 4px solid #128c7e; justify-content: space-between; align-items: center; font-size: 12px; }
+    .reply-preview-bar { display: none; background: #e2e8f0; padding: 6px 14px; border-left: 4px solid #128c7e; justify-content: space-between; align-items: center; font-size: 12px; }
     .reply-preview-bar.active { display: flex; }
     .btn-cancel-reply { background: none; border: none; font-size: 16px; cursor: pointer; color: #718096; }
 
-    /* INPUT TOOLBAR */
-    .chat-form { display: flex; padding: 8px 10px; background: #f0f2f5; align-items: center; gap: 4px; flex-shrink: 0; }
-    .btn-action { background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    /* MENU POPUP LAMPIRAN (ATTACHMENT POPUP) */
+    .attach-popup {
+      display: none;
+      position: absolute;
+      bottom: 60px;
+      left: 12px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      padding: 8px;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 40;
+    }
+    .attach-popup.active { display: flex; }
+    .btn-pop-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #333;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.2s;
+      width: 100%;
+      text-align: left;
+    }
+    .btn-pop-item:hover { background: #f0f2f5; }
+
+    /* INPUT TOOLBAR RAPI & PRESISI */
+    .chat-form {
+      display: flex;
+      padding: 8px 12px;
+      background: #f0f2f5;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .btn-action { background: none; border: none; font-size: 20px; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; flex-shrink: 0; }
     .btn-action:hover { background: #e0e0e0; }
     .btn-record.recording { color: red; animation: pulse 1s infinite; }
 
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-    .chat-form input[type="text"] { flex: 1; padding: 9px 12px; border: none; border-radius: 20px; outline: none; font-size: 14px; background: #fff; }
-    .btn-send { padding: 0; border: none; background: #075e54; color: white; border-radius: 50%; cursor: pointer; width: 38px; height: 38px; font-size: 15px; font-weight: bold; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+    .chat-form input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 20px;
+      outline: none;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .btn-send {
+      padding: 0;
+      border: none;
+      background: #075e54;
+      color: white;
+      border-radius: 50%;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      font-size: 15px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+    }
 
     /* MODAL UMUM */
     .app-modal { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; justify-content: center; align-items: center; padding: 20px; }
@@ -108,6 +240,11 @@
   </style>
 </head>
 <body>
+
+  <!-- BRANDING DEVELOPER DI BACKGROUND ATAS -->
+  <div class="bg-developer-tag">
+    💻 Developer: <strong>Nama Anda</strong>
+  </div>
 
   <div class="chat-container" id="chatApp">
     <!-- Header -->
@@ -145,22 +282,27 @@
       <button type="button" class="btn-cancel-reply" id="btnCancelReply">✕</button>
     </div>
 
+    <!-- MENU POPUP LAMPIRAN -->
+    <div class="attach-popup" id="attachPopup">
+      <button type="button" class="btn-pop-item" id="btnOptFile">📁 Dokumen & File</button>
+      <button type="button" class="btn-pop-item" id="btnOptGallery">🖼️ Foto & Galeri</button>
+      <button type="button" class="btn-pop-item" id="btnOptCam">📸 Kamera Live</button>
+    </div>
+
     <!-- Form Input & Toolbar Media -->
     <form class="chat-form" id="form">
       <input type="file" id="fileInput" hidden accept="*/*" />
       <input type="file" id="imageInput" hidden accept="image/*" />
 
-      <!-- 6 Fitur Media Toolbar -->
-      <button type="button" class="btn-action" id="btnAttach" title="Kirim File">📁</button>
-      <button type="button" class="btn-action" id="btnGallery" title="Kirim Gambar">🖼️</button>
-      <button type="button" class="btn-action" id="btnLiveCam" title="Kamera Live">📸</button>
+      <!-- Tombol Lampiran & Voice Note -->
+      <button type="button" class="btn-action" id="btnToggleAttach" title="Lampirkan Media">📎</button>
       <button type="button" class="btn-action btn-record" id="btnMic" title="Pesan Suara">🎤</button>
 
       <input id="input" type="text" autocomplete="off" placeholder="Ketik pesan..." />
       <button type="submit" class="btn-send" title="Kirim">➤</button>
     </form>
 
-    <!-- 1. MODAL INPUT NAMA WAJIB PERTAMA KALI -->
+    <!-- MODAL INPUT NAMA WAJIB PERTAMA KALI -->
     <div class="app-modal" id="nameModal">
       <div class="modal-card">
         <h3>Selamat Datang! 👋</h3>
@@ -216,6 +358,11 @@
     </div>
   </div>
 
+  <!-- FOOTER DI BAGIAN BAWAH -->
+  <footer class="app-footer">
+    WhatsApp Web Clone &copy; 2026 | Developed with ❤️ by <strong>Nama Anda</strong>
+  </footer>
+
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
@@ -223,7 +370,7 @@
     const status = document.getElementById('status');
     const messages = document.getElementById('messages');
 
-    // 1. INPUT NAMA WAJIB PERTAMA KALI OPEN (Pakai sessionStorage agar selalu minta per tab/sesi baru)
+    // 1. INPUT NAMA WAJIB PERTAMA KALI OPEN
     let myUserId = sessionStorage.getItem('chat_user_id') || ('id_' + Math.random().toString(36).substr(2, 9));
     sessionStorage.setItem('chat_user_id', myUserId);
 
@@ -302,6 +449,25 @@
         input.value = '';
         activeReply = null;
         replyPreview.classList.remove('active');
+        attachPopup.classList.remove('active');
+      }
+    });
+
+    // TOGGLE MENU LAMPIRAN (📎)
+    const btnToggleAttach = document.getElementById('btnToggleAttach');
+    const attachPopup = document.getElementById('attachPopup');
+    const btnOptFile = document.getElementById('btnOptFile');
+    const btnOptGallery = document.getElementById('btnOptGallery');
+    const btnOptCam = document.getElementById('btnOptCam');
+
+    btnToggleAttach.addEventListener('click', (e) => {
+      e.stopPropagation();
+      attachPopup.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!attachPopup.contains(e.target) && e.target !== btnToggleAttach) {
+        attachPopup.classList.remove('active');
       }
     });
 
@@ -356,9 +522,11 @@
     }
 
     // 5. FITUR KIRIM FILE & KIRIM GAMBAR
-    const btnAttach = document.getElementById('btnAttach');
     const fileInput = document.getElementById('fileInput');
-    btnAttach.addEventListener('click', () => fileInput.click());
+    btnOptFile.addEventListener('click', () => {
+      attachPopup.classList.remove('active');
+      fileInput.click();
+    });
 
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -379,9 +547,11 @@
       reader.readAsDataURL(file);
     });
 
-    const btnGallery = document.getElementById('btnGallery');
     const imageInput = document.getElementById('imageInput');
-    btnGallery.addEventListener('click', () => imageInput.click());
+    btnOptGallery.addEventListener('click', () => {
+      attachPopup.classList.remove('active');
+      imageInput.click();
+    });
 
     imageInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -402,7 +572,6 @@
     });
 
     // 6. FITUR KAMERA LIVE
-    const btnLiveCam = document.getElementById('btnLiveCam');
     const camModal = document.getElementById('camModal');
     const webcam = document.getElementById('webcam');
     const btnSnap = document.getElementById('btnSnap');
@@ -410,7 +579,8 @@
     const canvas = document.getElementById('canvas');
     let streamTrack = null;
 
-    btnLiveCam.addEventListener('click', async () => {
+    btnOptCam.addEventListener('click', async () => {
+      attachPopup.classList.remove('active');
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
         webcam.srcObject = stream;
