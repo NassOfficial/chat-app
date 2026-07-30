@@ -5,7 +5,6 @@ const { Server } = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 
-// Meningkatkan batas ukuran kirim data hingga 10MB (untuk foto, file & audio)
 const io = new Server(server, {
   maxHttpBufferSize: 1e7,
   cors: { origin: "*", methods: ["GET", "POST"] }
@@ -18,7 +17,7 @@ const chatHistory = [];
 io.on('connection', (socket) => {
   const username = 'User-' + Math.floor(Math.random() * 1000);
 
-  // Kirim riwayat saat baru terhubung
+  // Kirim riwayat pesan saat terhubung
   socket.emit('load history', chatHistory);
 
   io.emit('chat message', {
@@ -41,14 +40,49 @@ io.on('connection', (socket) => {
     };
 
     chatHistory.push(messageData);
-    if (chatHistory.length > 50) {
-      chatHistory.shift();
-    }
+    if (chatHistory.length > 50) chatHistory.shift();
 
     io.emit('chat message', messageData);
   });
 
+  // --- SIGNALING WEBRTC (TELEPON & VIDEO CALL) ---
+  socket.on('call-user', (data) => {
+    socket.broadcast.emit('call-made', {
+      offer: data.offer,
+      from: socket.id,
+      user: username,
+      callType: data.callType // 'video' atau 'voice'
+    });
+  });
+
+  socket.on('make-answer', (data) => {
+    io.to(data.to).emit('answer-made', {
+      answer: data.answer,
+      from: socket.id
+    });
+  });
+
+  socket.on('ice-candidate', (data) => {
+    io.to(data.to).emit('ice-candidate', {
+      candidate: data.candidate,
+      from: socket.id
+    });
+  });
+
+  socket.on('reject-call', (data) => {
+    io.to(data.to).emit('call-rejected');
+  });
+
+  socket.on('end-call', (data) => {
+    if (data.to) {
+      io.to(data.to).emit('call-ended');
+    } else {
+      socket.broadcast.emit('call-ended');
+    }
+  });
+
   socket.on('disconnect', () => {
+    socket.broadcast.emit('call-ended');
     io.emit('chat message', {
       user: 'System',
       text: `${username} keluar`
