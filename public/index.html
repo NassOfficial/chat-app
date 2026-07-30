@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Web Clone</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #d1d7db; }
+    
+    .chat-container { width: 100%; max-width: 450px; height: 90vh; background: #efeae2; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; flex-direction: column; overflow: hidden; }
+    
+    /* Header WhatsApp */
+    .chat-header { background: #075e54; color: white; padding: 12px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    .avatar { width: 38px; height: 38px; background: #128c7e; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; color: #fff; }
+    .header-info { display: flex; flex-direction: column; }
+    .header-title { font-size: 16px; font-weight: 600; }
+    .header-status { font-size: 12px; opacity: 0.85; }
+
+    /* Area Pesan */
+    .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+    
+    /* Style Bubble Chat */
+    .message { max-width: 75%; padding: 6px 10px; border-radius: 8px; font-size: 14px; line-height: 1.4; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); word-break: break-word; display: flex; flex-direction: column; }
+    
+    /* Pesan Kanan (Pengirim) */
+    .message.outgoing { align-self: flex-end; background-color: #d9fdd3; border-top-right-radius: 0; }
+    .message.outgoing .username { display: none; }
+
+    /* Pesan Kiri (Penerima) */
+    .message.incoming { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
+    .message.incoming .username { font-weight: bold; font-size: 11px; color: #128c7e; margin-bottom: 2px; }
+
+    /* Pesan Sistem */
+    .message.system { align-self: center; background-color: #ffffff99; color: #54656f; font-size: 11px; padding: 4px 12px; border-radius: 6px; box-shadow: none; text-align: center; max-width: 90%; }
+
+    .time { font-size: 10px; color: #667781; align-self: flex-end; margin-top: 2px; margin-left: 12px; float: right; }
+
+    /* Form Input */
+    .chat-form { display: flex; padding: 10px; background: #f0f2f5; align-items: center; gap: 8px; }
+    .chat-form input { flex: 1; padding: 10px 16px; border: none; border-radius: 20px; outline: none; font-size: 14px; background: #fff; }
+    .chat-form button { padding: 10px 16px; border: none; background: #075e54; color: white; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="avatar">G</div>
+      <div class="header-info">
+        <div class="header-title">Grup Chat Publik</div>
+        <div class="header-status" id="status">Menghubungkan...</div>
+      </div>
+    </div>
+    
+    <div class="chat-messages" id="messages"></div>
+    
+    <form class="chat-form" id="form">
+      <input id="input" autocomplete="off" placeholder="Ketik pesan..." required />
+      <button type="submit">➤</button>
+    </form>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const messages = document.getElementById('messages');
+    const status = document.getElementById('status');
+
+    // Buat atau ambil ID unik browser dari localStorage
+    let myUserId = localStorage.getItem('chat_user_id');
+    if (!myUserId) {
+      myUserId = 'user_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('chat_user_id', myUserId);
+    }
+
+    socket.on('connect', () => { status.textContent = "online"; });
+    socket.on('disconnect', () => { status.textContent = "terputus"; });
+
+    // Memuat seluruh riwayat pesan saat pertama kali buka / refresh
+    socket.on('load history', (history) => {
+      messages.innerHTML = ''; // Bersihkan kontainer
+      history.forEach(data => renderMessage(data));
+    });
+
+    // Menerima pesan baru secara real-time
+    socket.on('chat message', (data) => {
+      renderMessage(data);
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (text) {
+        socket.emit('chat message', {
+          text: text,
+          senderId: myUserId
+        });
+        input.value = '';
+      }
+    });
+
+    // Fungsi untuk menampilkan pesan ke layar
+    function renderMessage(data) {
+      const item = document.createElement('div');
+      item.classList.add('message');
+      
+      if (data.user === 'System') {
+        item.classList.add('system');
+        item.textContent = data.text;
+      } else {
+        // Cek ID pengirim dengan ID unik lokal browser
+        if (data.senderId === myUserId) {
+          item.classList.add('outgoing');
+        } else {
+          item.classList.add('incoming');
+        }
+
+        item.innerHTML = `
+          <span class="username">${data.user}</span>
+          <span>${data.text}</span>
+          <span class="time">${data.time || ''}</span>
+        `;
+      }
+
+      messages.appendChild(item);
+      messages.scrollTop = messages.scrollHeight;
+    }
+  </script>
+</body>
+</html>
