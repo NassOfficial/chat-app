@@ -21,7 +21,7 @@
       position: relative;
     }
 
-    /* WATERMARK BRANDING DEVELOPER DI BACKGROUND */
+    /* BRANDING DEVELOPER DI HEADER BACKGROUND LUAR */
     .bg-developer-tag {
       position: absolute;
       top: 14px;
@@ -75,7 +75,7 @@
       color: #075e54;
     }
 
-    /* HEADER */
+    /* HEADER CHAT */
     .chat-header { background: #075e54; color: white; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 10; flex-shrink: 0; }
     .header-left { display: flex; align-items: center; gap: 12px; }
     .avatar { width: 40px; height: 40px; background: #128c7e; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; color: #fff; }
@@ -92,10 +92,47 @@
     .lock-banner.active { display: flex; }
     .btn-unlock { background: #fff; color: #075e54; border: none; padding: 4px 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 11px; }
 
-    /* AREA PESAN */
-    .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; z-index: 2; }
+    /* AREA PESAN DENGAN WATERMARK DEVELOPER IN-BACKGROUND */
+    .chat-messages {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 2;
+      position: relative;
+    }
+
+    /* WATERMARK NAMA DEVELOPER DI BACKGROUND CHAT */
+    .chat-messages::before {
+      content: "Developer: Nama Anda";
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-25deg);
+      font-size: 26px;
+      font-weight: 800;
+      color: rgba(0, 0, 0, 0.06);
+      letter-spacing: 2px;
+      pointer-events: none;
+      white-space: nowrap;
+      user-select: none;
+      z-index: 0;
+    }
     
-    .message { max-width: 82%; padding: 8px 12px; border-radius: 8px; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.12); word-break: break-word; display: flex; flex-direction: column; cursor: pointer; }
+    .message {
+      max-width: 82%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      position: relative;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+      word-break: break-word;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      z-index: 1;
+    }
     .message.outgoing { align-self: flex-end; background-color: #d9fdd3; border-top-right-radius: 0; }
     .message.incoming { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
 
@@ -241,13 +278,13 @@
 </head>
 <body>
 
-  <!-- BRANDING DEVELOPER DI BACKGROUND ATAS -->
+  <!-- BRANDING DEVELOPER DI HEADER BACKGROUND LUAR -->
   <div class="bg-developer-tag">
     💻 Developer: <strong>Nama Anda</strong>
   </div>
 
   <div class="chat-container" id="chatApp">
-    <!-- Header -->
+    <!-- Header Chat -->
     <div class="chat-header">
       <div class="header-left">
         <div class="avatar">G</div>
@@ -270,7 +307,7 @@
       <button class="btn-unlock" id="btnUnlock">🔓 Buka Kunci</button>
     </div>
 
-    <!-- Area Tampilan Chat -->
+    <!-- Area Tampilan Chat (Memiliki Watermark Background) -->
     <div class="chat-messages" id="messages"></div>
 
     <!-- Indicator Reply Bar di Atas Input -->
