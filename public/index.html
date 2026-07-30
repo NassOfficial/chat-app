@@ -14,7 +14,7 @@
       max-width: 420px; 
       height: 550px; 
       max-height: 85vh; 
-      background: #efeae2; /* Warna dasar wallpaper chat */
+      background: #efeae2; 
       border-radius: 12px; 
       box-shadow: 0 4px 15px rgba(0,0,0,0.15); 
       display: flex; 
@@ -28,15 +28,15 @@
       position: absolute;
       top: 45%;
       left: 50%;
-      transform: translate(-50%, -50%) rotate(-15deg); /* Posisi tepat di tengah & sedikit miring */
-      font-size: 32px;
+      transform: translate(-50%, -50%) rotate(-15deg);
+      font-size: 30px;
       font-weight: 800;
-      color: rgba(0, 0, 0, 0.07); /* Sangat transparan */
+      color: rgba(0, 0, 0, 0.06);
       text-transform: uppercase;
       letter-spacing: 3px;
-      pointer-events: none; /* Agar tidak menghalangi klik & scroll */
+      pointer-events: none;
       user-select: none;
-      z-index: 1; /* Di bawah pesan, di atas background */
+      z-index: 1;
       white-space: nowrap;
     }
     
@@ -47,39 +47,68 @@
     .header-title { font-size: 16px; font-weight: 600; }
     .header-status { font-size: 12px; opacity: 0.85; }
 
-    /* Area Pesan dengan Background Transparan (Agar Watermark Terlihat) */
+    /* Area Pesan */
     .chat-messages { 
       flex: 1; 
       padding: 16px; 
       overflow-y: auto; 
       display: flex; 
       flex-direction: column; 
-      gap: 8px; 
+      gap: 10px; 
       background: transparent;
-      z-index: 2; /* Di atas watermark */
+      z-index: 2; 
     }
 
     /* Style Scrollbar Kustom */
-    .chat-messages::-webkit-scrollbar {
-      width: 6px;
-    }
-    .chat-messages::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.2);
-      border-radius: 4px;
-    }
+    .chat-messages::-webkit-scrollbar { width: 6px; }
+    .chat-messages::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); border-radius: 4px; }
     
-    .message { max-width: 80%; padding: 6px 10px; border-radius: 8px; font-size: 14px; line-height: 1.4; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); word-break: break-word; display: flex; flex-direction: column; }
+    /* Bubble Pesan */
+    .message { 
+      max-width: 80%; 
+      padding: 6px 10px; 
+      border-radius: 8px; 
+      position: relative; 
+      box-shadow: 0 1px 2px rgba(0,0,0,0.12); 
+      word-break: break-word; 
+      display: flex; 
+      flex-direction: column; 
+    }
     .message.outgoing { align-self: flex-end; background-color: #d9fdd3; border-top-right-radius: 0; }
     .message.incoming { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
-    .message.incoming .username { font-weight: bold; font-size: 11px; color: #128c7e; margin-bottom: 2px; }
     .message.system { align-self: center; background-color: #ffffff99; color: #54656f; font-size: 11px; padding: 4px 12px; border-radius: 6px; box-shadow: none; text-align: center; }
 
-    /* Media inside messages */
-    .message img { max-width: 100%; border-radius: 6px; margin-top: 4px; cursor: pointer; }
-    .message audio { max-width: 200px; height: 36px; margin-top: 4px; }
-    .file-link { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 6px 10px; border-radius: 6px; text-decoration: none; color: #075e54; font-weight: 500; font-size: 13px; margin-top: 4px; }
+    /* PEMBEDA TEGAS: NAMA PENGIRIM VS ISI PESAN */
+    .message-username {
+      font-weight: 700;
+      font-size: 11px;
+      margin-bottom: 2px;
+      display: block;
+      letter-spacing: 0.2px;
+    }
+    
+    .message.incoming .message-username {
+      color: #128c7e; /* Warna Hijau WhatsApp untuk pengirim lain */
+    }
+    
+    .message.outgoing .message-username {
+      color: #005c4b; /* Warna Hijau Tua untuk 'Anda' */
+      opacity: 0.8;
+    }
 
-    .time { font-size: 10px; color: #667781; align-self: flex-end; margin-top: 2px; }
+    .message-text {
+      font-size: 14px;
+      color: #111b21; /* Warna teks hitam pekat agar tidak campur dengan nama */
+      line-height: 1.4;
+      margin-top: 1px;
+    }
+
+    /* Media dalam pesan */
+    .message img { max-width: 100%; border-radius: 6px; margin-top: 6px; cursor: pointer; }
+    .message audio { max-width: 200px; height: 36px; margin-top: 6px; }
+    .file-link { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 6px 10px; border-radius: 6px; text-decoration: none; color: #075e54; font-weight: 500; font-size: 13px; margin-top: 6px; }
+
+    .time { font-size: 10px; color: #667781; align-self: flex-end; margin-top: 4px; }
 
     /* Footer Toolbar Input */
     .chat-form { display: flex; padding: 8px; background: #f0f2f5; align-items: center; gap: 4px; z-index: 10; }
@@ -106,9 +135,7 @@
       border-top: 1px solid #d1d7db;
       z-index: 10;
     }
-    .chat-footer-credit strong {
-      color: #075e54;
-    }
+    .chat-footer-credit strong { color: #075e54; }
 
     /* Modal Live Camera */
     .cam-modal { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; flex-direction: column; justify-content: center; align-items: center; gap: 16px; padding: 20px; }
@@ -330,6 +357,7 @@
       }
     });
 
+    // RENDER PESAN PADA BUBBLE CHAT
     function renderMessage(data) {
       const item = document.createElement('div');
       item.classList.add('message');
@@ -338,16 +366,21 @@
         item.classList.add('system');
         item.textContent = data.text;
       } else {
-        if (data.senderId === myUserId) {
+        const isOutgoing = (data.senderId === myUserId);
+        
+        if (isOutgoing) {
           item.classList.add('outgoing');
         } else {
           item.classList.add('incoming');
         }
 
-        let contentHtml = `<span class="username">${data.user}</span>`;
+        // Tampilkan "Anda" untuk pesan sendiri, dan Nama Pengirim untuk orang lain
+        const displayName = isOutgoing ? 'Anda' : (data.user || 'Pengguna');
+        
+        let contentHtml = `<span class="message-username">${displayName}</span>`;
 
         if (data.text) {
-          contentHtml += `<div>${data.text}</div>`;
+          contentHtml += `<div class="message-text">${data.text}</div>`;
         }
         if (data.image) {
           contentHtml += `<img src="${data.image}" onclick="window.open(this.src)" title="Klik untuk memperbesar" />`;
